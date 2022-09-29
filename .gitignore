@@ -16,6 +16,7 @@ eggs/
 .eggs/
 lib/
 lib64/
+media/
 parts/
 sdist/
 var/
@@ -26,6 +27,8 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+.vscode/
+migrations/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -127,3 +130,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+#PEP8 config
+setup.cfg

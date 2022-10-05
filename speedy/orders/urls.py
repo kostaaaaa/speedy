@@ -1,12 +1,13 @@
-from django.urls import include, path
+from django.urls import path, include
 from rest_framework import routers
 
-from .views import OrderViewSet, CreateOrderViewSet
+from .views import OrderApiView, CreateOrderViewSet, ContactUsViewSet
 
 router = routers.DefaultRouter()
-router.register('me/orders', OrderViewSet, basename='orders')
-router.register('orders', CreateOrderViewSet, basename='create_order')
+router.register(r'create-order', CreateOrderViewSet)
+router.register(r'contact-us', ContactUsViewSet)
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('v1/', include(router.urls)),
+    path('v1/me/orders/', OrderApiView.as_view(), name='order_list'),
 ]

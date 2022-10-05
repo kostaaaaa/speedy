@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Order
+from .models import Order, Contact
 
 
 class OrderListSerializer(serializers.ModelSerializer):
@@ -22,4 +22,10 @@ class OrderListSerializer(serializers.ModelSerializer):
 class CreateOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
+        fields = '__all__'
+
+
+class ContactUsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contact
         fields = '__all__'

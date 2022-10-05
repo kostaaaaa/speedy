@@ -1,15 +1,13 @@
-from django.db import transaction
-from rest_framework import viewsets, response, status
-from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import generics, viewsets, response, status, mixins
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 
-from .models import Order
-from .serializers import OrderListSerializer, CreateOrderSerializer
+from .models import Order, Contact
+from .serializers import OrderListSerializer, CreateOrderSerializer, ContactUsSerializer
 from catalog.models import CarModel
 
 
-class OrderViewSet(viewsets.ReadOnlyModelViewSet):
+class OrderApiView(generics.ListAPIView):
     serializer_class = OrderListSerializer
     permission_classes = [IsAuthenticated]
 
@@ -18,13 +16,12 @@ class OrderViewSet(viewsets.ReadOnlyModelViewSet):
         return queryset
 
 
-class CreateOrderViewSet(viewsets.ModelViewSet):
+class CreateOrderViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin):
     serializer_class = CreateOrderSerializer
     queryset = Order.objects.all()
+    permission_classes = [IsAuthenticated]
 
-    @transaction.atomic
-    @action(detail=False, methods=['POST'], url_path='create-order')
-    def create_order(self, request):
+    def create(self, request):
         pk = self.request.data.get('car_id')
         car = CarModel.objects.get(pk=pk)
         start_date = self.request.data.get('start_date')
@@ -32,3 +29,9 @@ class CreateOrderViewSet(viewsets.ModelViewSet):
         order = Order.objects.create(user=request.user, car=car, start_date=start_date, finish_date=finish_date)
         serializer = self.get_serializer(order)
         return response.Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class ContactUsViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin):
+    serializer_class = ContactUsSerializer
+    queryset = Contact.objects.all()
+    permission_classes = [AllowAny]
